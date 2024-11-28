@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/app/server.ts"
+    "dev": "ts-node-dev --respawn --transpile-only src/app/server.ts",
+    "db:generate": "npx drizzle-kit generate",
+    "db:migrate": "npx drizzle-kit migrate",
+    "db:push": "npx drizzle-kit push"
   },
   "keywords": [],
   "author": "",
@@ -12,12 +15,16 @@
   "dependencies": {
     "-": "^0.0.1",
     "@neondatabase/serverless": "^0.10.4",
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.36.4",
-    "express": "^4.21.1"
+    "drizzle-zod": "^0.5.1",
+    "express": "^4.21.1",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.0",

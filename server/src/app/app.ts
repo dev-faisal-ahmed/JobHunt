@@ -2,7 +2,7 @@ import cors from "cors";
 import express from "express";
 
 import { globalErrorHandler } from "../middleware/globalErrorHandler";
-import { authRouter } from "../modules/auth/auth.router";
+import { appRouter } from "./router";
 
 export const app = express();
 
@@ -11,8 +11,7 @@ app.use(express.json());
 app.use(cors());
 
 // apis
-// app.use("/api/v1", appRouter);
-app.use("/api/v1", authRouter);
+app.use("/api/v1", appRouter);
 
 app.get("/", (_req, res) => {
   res.status(200).json({ ok: true, message: "Welcome to JobVault server" });

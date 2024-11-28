@@ -1,5 +1,5 @@
 {
-  "id": "85b1f490-3294-4010-a61e-0883a9a33257",
+  "id": "fe1a842e-347d-4802-81fc-31975af25e61",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -23,15 +23,27 @@
         },
         "email": {
           "name": "email",
-          "type": "varchar(30)",
+          "type": "varchar(60)",
           "primaryKey": false,
           "notNull": true
         },
         "password": {
           "name": "password",
+          "type": "varchar(60)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "provider": {
+          "name": "provider",
           "type": "varchar(12)",
           "primaryKey": false,
           "notNull": true
+        },
+        "imageUrl": {
+          "name": "imageUrl",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "createdAt": {
           "name": "createdAt",

@@ -2,9 +2,9 @@ import { sendSuccessResponse } from "../../helpers/responseHelpers";
 import { catchAsync } from "../../middleware/catchAsync";
 import { authService } from "./auth.service";
 
-const login = catchAsync(async (req, res) => {
-  const response = await authService.register();
-  sendSuccessResponse(res, { message: "User created successfully", data: response });
+const register = catchAsync(async (req, res) => {
+  const message = await authService.register(req.body);
+  sendSuccessResponse(res, { message, data: null });
 });
 
-export const authController = { login };
+export const authController = { register };
