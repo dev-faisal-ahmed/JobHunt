@@ -8,20 +8,13 @@ export const globalErrorHandler: ErrorRequestHandler = (error, _, res, __) => {
 
   // handling error for zod
   if (error.name === "ZodError") {
-    message = error.issues.reduce(
-      (msg: string, issue: { message: string; path: any[]; received: string }, index: number) => {
-        msg += issue.received === "undefined" ? issue.message : `In ${issue.path[0]} ${issue.message}`;
-        msg += index !== error.issues.length - 1 ? " || " : "";
-        return msg;
-      },
-      ""
-    );
+    const issues = error.issues as { message: string }[];
+    message = issues.map(({ message }) => message).join(" | ");
   }
 
   if (error.name === "NeonDbError") {
     message = error.detail;
   }
-  console.log(error);
 
   const errorInfo = config.NODE_ENV === "development" ? error : null;
 
