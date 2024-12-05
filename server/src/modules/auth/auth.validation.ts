@@ -6,6 +6,12 @@ const registerSchema = z.object({
   password: z.string({ required_error: "Password is required" }).min(4, { message: "Minimum password length is 4" }),
 });
 
-export type TRegisterPayload = z.infer<typeof registerSchema>;
+const loginSchema = z.object({
+  email: z.string({ required_error: "Email is required" }).email({ message: "Invalid email" }),
+  password: z.string({ required_error: "Password is required" }),
+});
 
-export const authValidation = { registerSchema };
+export type TRegisterPayload = z.infer<typeof registerSchema>;
+export type TLoginPayload = z.infer<typeof loginSchema>;
+
+export const authValidation = { registerSchema, loginSchema };

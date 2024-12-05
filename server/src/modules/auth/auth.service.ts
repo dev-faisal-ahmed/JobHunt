@@ -1,9 +1,10 @@
 import { db } from "../../db";
 import { eq } from "drizzle-orm";
-import { hashPassword } from "./auth.helper";
-import { PROVIDERS, UserTable } from "../../db/schema/userTable";
 import { AppError } from "../../helpers/appError";
-import { TRegisterPayload } from "./auth.validation";
+import { generateAccessToken, generateRefreshToken } from "../../helpers/common";
+import { comparePassword, hashPassword } from "./auth.helper";
+import { PROVIDERS, UserTable } from "../../db/schema/userTable";
+import { TLoginPayload, TRegisterPayload } from "./auth.validation";
 
 const register = async (payload: TRegisterPayload) => {
   const { name, email } = payload;
@@ -24,4 +25,25 @@ const register = async (payload: TRegisterPayload) => {
   return "You have successfully registered";
 };
 
-export const authService = { register };
+const login = async (payload: TLoginPayload) => {
+  const { email, password } = payload;
+  const isUserExist = await db.query.user.findFirst({
+    where: eq(UserTable.email, email),
+    columns: { id: true, name: true, email: true, imageUrl: true, password: true },
+  });
+
+  // checking if user exist or not
+  if (!isUserExist) throw new AppError("User not found", 404);
+
+  // checking if password is correct
+  const isPasswordMatch = await comparePassword(password, isUserExist.password!);
+  if (!isPasswordMatch) throw new AppError("Password does not match", 400);
+
+  const { id, name, imageUrl } = isUserExist;
+  const accessToken = generateAccessToken({ id, name, email, imageUrl });
+  const refreshToken = generateRefreshToken({ id, email });
+
+  return { accessToken, refreshToken };
+};
+
+export const authService = { register, login };
