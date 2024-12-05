@@ -29,6 +29,13 @@ export const generateRefreshToken = (payload: IRefreshTokenData) => {
   return jwt.sign(payload, config.REFRESH_TOKEN_SECRET!, { expiresIn: "90d" });
 };
 
+export const decodeAccessToken = (accessToken: string) => {
+  const decodedData = jwt.verify(accessToken, config.ACCESS_TOKEN_SECRET!);
+  if (!decodedData) return null;
+
+  return decodedData as IAcessTokenData;
+};
+
 export const decodeRefreshToken = (refreshToken: string) => {
   const decodedData = jwt.verify(refreshToken, config.REFRESH_TOKEN_SECRET!);
   if (!decodedData) return null;

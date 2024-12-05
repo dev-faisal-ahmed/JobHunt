@@ -9,7 +9,7 @@
   },
   "include": [
     "src",
-    "src/db"
+    "src/db",
   ],
   "exclude": [
     "node_modules"
