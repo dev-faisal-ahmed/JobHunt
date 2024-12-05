@@ -1,7 +1,7 @@
 import { db } from "../../db";
 import { eq } from "drizzle-orm";
 import { AppError } from "../../helpers/appError";
-import { generateAccessToken, generateRefreshToken } from "../../helpers/common";
+import { decodeRefreshToken, generateAccessToken, generateRefreshToken } from "../../helpers/common";
 import { comparePassword, hashPassword } from "./auth.helper";
 import { PROVIDERS, UserTable } from "../../db/schema/userTable";
 import { TLoginPayload, TRegisterPayload } from "./auth.validation";
@@ -46,4 +46,22 @@ const login = async (payload: TLoginPayload) => {
   return { accessToken, refreshToken };
 };
 
-export const authService = { register, login };
+const getAccessToken = async (refreshToken: string) => {
+  const decodedUser = decodeRefreshToken(refreshToken);
+
+  if (!decodedUser) throw new AppError("Invalid refresh token", 400);
+  const email = decodedUser.email;
+
+  const isUserExist = await db.query.user.findFirst({
+    where: eq(UserTable.email, email),
+    columns: { id: true, name: true, email: true, imageUrl: true },
+  });
+
+  if (!isUserExist) throw new AppError("User not found", 404);
+  const { id, name, imageUrl } = isUserExist;
+  const accessToken = generateAccessToken({ id, name, email, imageUrl });
+
+  return { accessToken };
+};
+
+export const authService = { register, login, getAccessToken };

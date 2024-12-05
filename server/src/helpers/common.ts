@@ -28,3 +28,10 @@ interface IRefreshTokenData {
 export const generateRefreshToken = (payload: IRefreshTokenData) => {
   return jwt.sign(payload, config.REFRESH_TOKEN_SECRET!, { expiresIn: "90d" });
 };
+
+export const decodeRefreshToken = (refreshToken: string) => {
+  const decodedData = jwt.verify(refreshToken, config.REFRESH_TOKEN_SECRET!);
+  if (!decodedData) return null;
+
+  return decodedData as IRefreshTokenData;
+};

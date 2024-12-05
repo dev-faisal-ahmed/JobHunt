@@ -13,4 +13,10 @@ const login = catchAsync(async (req, res) => {
   sendSuccessResponse(res, { message: "Login was successful", data: { accessToken } });
 });
 
-export const authController = { register, login };
+const getAccessToken = catchAsync(async (req, res) => {
+  const refreshToken = req.cookies["refresh_token"];
+  const { accessToken } = await authService.getAccessToken(refreshToken);
+  sendSuccessResponse(res, { message: "Access token retrieved successfully", data: { accessToken } });
+});
+
+export const authController = { register, login, getAccessToken };
