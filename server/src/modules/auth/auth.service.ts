@@ -10,28 +10,28 @@ import { eq } from "drizzle-orm";
 import { AppError } from "../../helpers/appError";
 import { decodeRefreshToken, generateAccessToken, generateRefreshToken } from "../../helpers/common";
 import { comparePassword, hashPassword } from "./auth.helper";
-import { PROVIDERS, UserTable } from "../../db/schema/userTable";
+import { PROVIDERS, USERS } from "../../db/schema";
 
 const register = async (payload: TRegisterPayload) => {
   const { name, email } = payload;
   // checking if user already exist or not
-  const isUserExist = await db.query.user.findFirst({
-    where: eq(UserTable.email, email),
+  const isUserExist = await db.query.USERS.findFirst({
+    where: eq(USERS.email, email),
     columns: { email: true },
   });
 
   if (isUserExist) throw new AppError("User already exist", 400);
 
   const password = await hashPassword(payload.password);
-  await db.insert(UserTable).values({ name, email, password, provider: PROVIDERS.CREDENTIALS });
+  await db.insert(USERS).values({ name, email, password, provider: PROVIDERS.CREDENTIALS });
 
   return "You have successfully registered";
 };
 
 const loginWithCredentials = async (payload: TLoginWithCredentialsPayload) => {
   const { email, password } = payload;
-  const isUserExist = await db.query.user.findFirst({
-    where: eq(UserTable.email, email),
+  const isUserExist = await db.query.USERS.findFirst({
+    where: eq(USERS.email, email),
     columns: { id: true, name: true, email: true, imageUrl: true, password: true },
   });
 
@@ -52,8 +52,8 @@ const loginWithCredentials = async (payload: TLoginWithCredentialsPayload) => {
 const loginWithGoogle = async (payload: TLoginWithGooglePayload) => {
   // checking if the user already exist or if he does generate access token if does not create a new user and then generate the access token
 
-  const isUserExist = await db.query.user.findFirst({
-    where: eq(UserTable.email, payload.email),
+  const isUserExist = await db.query.USERS.findFirst({
+    where: eq(USERS.email, payload.email),
     columns: { id: true, name: true, email: true, imageUrl: true },
   });
 
@@ -67,9 +67,9 @@ const loginWithGoogle = async (payload: TLoginWithGooglePayload) => {
 
   const { name, email, imageUrl } = payload;
   const [user] = await db
-    .insert(UserTable)
+    .insert(USERS)
     .values({ name, email, provider: PROVIDERS.GOOGLE, imageUrl })
-    .returning({ id: UserTable.id });
+    .returning({ id: USERS.id });
 
   const accessToken = generateAccessToken({ id: user.id, name, email, imageUrl });
   const refreshToken = generateRefreshToken({ id: user.id, email });
@@ -83,8 +83,8 @@ const getAccessToken = async (refreshToken: string) => {
   if (!decodedUser) throw new AppError("Invalid refresh token", 400);
   const email = decodedUser.email;
 
-  const isUserExist = await db.query.user.findFirst({
-    where: eq(UserTable.email, email),
+  const isUserExist = await db.query.USERS.findFirst({
+    where: eq(USERS.email, email),
     columns: { id: true, name: true, email: true, imageUrl: true },
   });
 
@@ -96,8 +96,8 @@ const getAccessToken = async (refreshToken: string) => {
 };
 
 const changePassword = async (payload: TChangePasswordPayload, email: string) => {
-  const userInfo = await db.query.user.findFirst({
-    where: eq(UserTable.email, email),
+  const userInfo = await db.query.USERS.findFirst({
+    where: eq(USERS.email, email),
     columns: { password: true, provider: true },
   });
 
@@ -108,7 +108,7 @@ const changePassword = async (payload: TChangePasswordPayload, email: string) =>
   if (!isPasswordMatch) throw new AppError("Password does not change", 400);
 
   const password = await hashPassword(payload.newPassword);
-  await db.update(UserTable).set({ password });
+  await db.update(USERS).set({ password });
 
   return "Password changed successfully";
 };

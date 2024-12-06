@@ -5,7 +5,7 @@ export enum PROVIDERS {
   CREDENTIALS = "CREDENTIALS",
 }
 
-export const UserTable = pgTable("users", {
+export const USERS = pgTable("users", {
   id: uuid().primaryKey().defaultRandom(),
   name: varchar({ length: 30 }).notNull(),
   email: varchar({ length: 60 }).unique().notNull(),

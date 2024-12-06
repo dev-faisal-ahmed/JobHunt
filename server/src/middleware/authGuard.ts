@@ -1,9 +1,9 @@
 import { db } from "../db";
 import { eq } from "drizzle-orm";
-import { catchAsync } from "./catchAsync";
-import { decodeAccessToken } from "../helpers/common";
-import { UserTable } from "../db/schema/userTable";
 import { AppError } from "../helpers/appError";
+import { decodeAccessToken } from "../helpers/common";
+import { catchAsync } from "./catchAsync";
+import { USERS } from "../db/schema";
 
 const BEARER = "bearer";
 
@@ -18,8 +18,8 @@ export const authGuard = catchAsync(async (req, _, next) => {
   if (!decodedUser) throw new AppError("Invalid token", 400);
 
   const { email } = decodedUser;
-  const isUserExist = await db.query.user.findFirst({
-    where: eq(UserTable.email, email),
+  const isUserExist = await db.query.USERS.findFirst({
+    where: eq(USERS.email, email),
     columns: { id: true, email: true },
   });
 

@@ -4,7 +4,6 @@ import cookiesParser from "cookie-parser";
 
 import { globalErrorHandler } from "../middleware/globalErrorHandler";
 import { appRouter } from "./router";
-import { config } from "./config";
 
 export const app = express();
 
