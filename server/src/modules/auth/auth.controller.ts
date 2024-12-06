@@ -13,6 +13,12 @@ const loginWithCredentials = catchAsync(async (req, res) => {
   sendSuccessResponse(res, { message: "Login was successful", data: { accessToken } });
 });
 
+const loginWithGoogle = catchAsync(async (req, res) => {
+  const { accessToken, refreshToken } = await authService.loginWithGoogle(req.body);
+  res.cookie("refresh_token", refreshToken);
+  sendSuccessResponse(res, { message: "Login was successful", data: { accessToken } });
+});
+
 const getAccessToken = catchAsync(async (req, res) => {
   const refreshToken = req.cookies["refresh_token"];
   const { accessToken } = await authService.getAccessToken(refreshToken);
@@ -24,4 +30,4 @@ const changePassword = catchAsync(async (req, res) => {
   sendSuccessResponse(res, { message, data: null });
 });
 
-export const authController = { register, loginWithCredentials, getAccessToken, changePassword };
+export const authController = { register, loginWithCredentials, loginWithGoogle, getAccessToken, changePassword };

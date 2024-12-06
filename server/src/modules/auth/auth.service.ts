@@ -1,7 +1,13 @@
+import {
+  TChangePasswordPayload,
+  TLoginWithCredentialsPayload,
+  TLoginWithGooglePayload,
+  TRegisterPayload,
+} from "./auth.validation";
+
 import { db } from "../../db";
 import { eq } from "drizzle-orm";
 import { AppError } from "../../helpers/appError";
-import { TChangePasswordPayload, TLoginWithCredentialsPayload, TRegisterPayload } from "./auth.validation";
 import { decodeRefreshToken, generateAccessToken, generateRefreshToken } from "../../helpers/common";
 import { comparePassword, hashPassword } from "./auth.helper";
 import { PROVIDERS, UserTable } from "../../db/schema/userTable";
@@ -16,11 +22,8 @@ const register = async (payload: TRegisterPayload) => {
 
   if (isUserExist) throw new AppError("User already exist", 400);
 
-  const userData: typeof UserTable.$inferInsert = { name, email, provider: PROVIDERS.CREDENTIALS };
   const password = await hashPassword(payload.password);
-  userData["password"] = password;
-
-  await db.insert(UserTable).values(userData);
+  await db.insert(UserTable).values({ name, email, password, provider: PROVIDERS.CREDENTIALS });
 
   return "You have successfully registered";
 };
@@ -42,6 +45,34 @@ const loginWithCredentials = async (payload: TLoginWithCredentialsPayload) => {
   const { id, name, imageUrl } = isUserExist;
   const accessToken = generateAccessToken({ id, name, email, imageUrl });
   const refreshToken = generateRefreshToken({ id, email });
+
+  return { accessToken, refreshToken };
+};
+
+const loginWithGoogle = async (payload: TLoginWithGooglePayload) => {
+  // checking if the user already exist or if he does generate access token if does not create a new user and then generate the access token
+
+  const isUserExist = await db.query.user.findFirst({
+    where: eq(UserTable.email, payload.email),
+    columns: { id: true, name: true, email: true, imageUrl: true },
+  });
+
+  if (isUserExist) {
+    const { id, name, email, imageUrl } = isUserExist;
+    const accessToken = generateAccessToken({ id, name, email, imageUrl });
+    const refreshToken = generateRefreshToken({ id, email });
+
+    return { accessToken, refreshToken };
+  }
+
+  const { name, email, imageUrl } = payload;
+  const [user] = await db
+    .insert(UserTable)
+    .values({ name, email, provider: PROVIDERS.GOOGLE, imageUrl })
+    .returning({ id: UserTable.id });
+
+  const accessToken = generateAccessToken({ id: user.id, name, email, imageUrl });
+  const refreshToken = generateRefreshToken({ id: user.id, email });
 
   return { accessToken, refreshToken };
 };
@@ -82,4 +113,4 @@ const changePassword = async (payload: TChangePasswordPayload, email: string) =>
   return "Password changed successfully";
 };
 
-export const authService = { register, loginWithCredentials, getAccessToken, changePassword };
+export const authService = { register, loginWithCredentials, loginWithGoogle, getAccessToken, changePassword };
