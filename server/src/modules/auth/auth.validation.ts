@@ -11,7 +11,17 @@ const loginSchema = z.object({
   password: z.string({ required_error: "Password is required" }),
 });
 
+const changePasswordSchema = z.object({
+  oldPassword: z
+    .string({ required_error: "Old Password is required" })
+    .min(1, { message: "Password can not be empty string" }),
+  newPassword: z
+    .string({ required_error: "New Password is required" })
+    .min(4, { message: "Minimum password length is 4" }),
+});
+
 export type TRegisterPayload = z.infer<typeof registerSchema>;
 export type TLoginPayload = z.infer<typeof loginSchema>;
+export type TChangePasswordPayload = z.infer<typeof changePasswordSchema>;
 
-export const authValidation = { registerSchema, loginSchema };
+export const authValidation = { registerSchema, loginSchema, changePasswordSchema };

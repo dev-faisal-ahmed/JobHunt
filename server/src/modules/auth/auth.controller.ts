@@ -19,4 +19,9 @@ const getAccessToken = catchAsync(async (req, res) => {
   sendSuccessResponse(res, { message: "Access token retrieved successfully", data: { accessToken } });
 });
 
-export const authController = { register, login, getAccessToken };
+const changePassword = catchAsync(async (req, res) => {
+  const message = await authService.changePassword(req.body, req.user.email);
+  sendSuccessResponse(res, { message, data: null });
+});
+
+export const authController = { register, login, getAccessToken, changePassword };

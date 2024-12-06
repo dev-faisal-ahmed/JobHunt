@@ -1,10 +1,10 @@
 import { db } from "../../db";
 import { eq } from "drizzle-orm";
 import { AppError } from "../../helpers/appError";
+import { TChangePasswordPayload, TLoginPayload, TRegisterPayload } from "./auth.validation";
 import { decodeRefreshToken, generateAccessToken, generateRefreshToken } from "../../helpers/common";
 import { comparePassword, hashPassword } from "./auth.helper";
 import { PROVIDERS, UserTable } from "../../db/schema/userTable";
-import { TLoginPayload, TRegisterPayload } from "./auth.validation";
 
 const register = async (payload: TRegisterPayload) => {
   const { name, email } = payload;
@@ -64,4 +64,22 @@ const getAccessToken = async (refreshToken: string) => {
   return { accessToken };
 };
 
-export const authService = { register, login, getAccessToken };
+const changePassword = async (payload: TChangePasswordPayload, email: string) => {
+  const userInfo = await db.query.user.findFirst({
+    where: eq(UserTable.email, email),
+    columns: { password: true, provider: true },
+  });
+
+  if (!userInfo) throw new AppError("User not found", 404);
+  if (userInfo.provider === PROVIDERS.GOOGLE) throw new AppError("You are not allowed to change password", 400);
+
+  const isPasswordMatch = await comparePassword(payload.oldPassword, userInfo.password!);
+  if (!isPasswordMatch) throw new AppError("Password does not change", 400);
+
+  const password = await hashPassword(payload.newPassword);
+  await db.update(UserTable).set({ password });
+
+  return "Password changed successfully";
+};
+
+export const authService = { register, login, getAccessToken, changePassword };
