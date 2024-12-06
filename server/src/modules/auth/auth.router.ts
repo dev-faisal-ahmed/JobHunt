@@ -7,7 +7,13 @@ import { authGuard } from "../../middleware/authGuard";
 export const authRouter = Router();
 
 authRouter.post("/register", validationHandler(authValidation.registerSchema), authController.register);
-authRouter.post("/login/credentials", validationHandler(authValidation.loginSchema), authController.login);
+
+authRouter.post(
+  "/login/credentials",
+  validationHandler(authValidation.loginWithCredentialsSchema),
+  authController.loginWithCredentials
+);
+
 authRouter.get("/get-access-token", authController.getAccessToken);
 
 authRouter.post(

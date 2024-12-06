@@ -7,8 +7,8 @@ const register = catchAsync(async (req, res) => {
   sendSuccessResponse(res, { message, data: null });
 });
 
-const login = catchAsync(async (req, res) => {
-  const { accessToken, refreshToken } = await authService.login(req.body);
+const loginWithCredentials = catchAsync(async (req, res) => {
+  const { accessToken, refreshToken } = await authService.loginWithCredentials(req.body);
   res.cookie("refresh_token", refreshToken);
   sendSuccessResponse(res, { message: "Login was successful", data: { accessToken } });
 });
@@ -24,4 +24,4 @@ const changePassword = catchAsync(async (req, res) => {
   sendSuccessResponse(res, { message, data: null });
 });
 
-export const authController = { register, login, getAccessToken, changePassword };
+export const authController = { register, loginWithCredentials, getAccessToken, changePassword };

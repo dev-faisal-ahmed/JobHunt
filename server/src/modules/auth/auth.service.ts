@@ -1,7 +1,7 @@
 import { db } from "../../db";
 import { eq } from "drizzle-orm";
 import { AppError } from "../../helpers/appError";
-import { TChangePasswordPayload, TLoginPayload, TRegisterPayload } from "./auth.validation";
+import { TChangePasswordPayload, TLoginWithCredentialsPayload, TRegisterPayload } from "./auth.validation";
 import { decodeRefreshToken, generateAccessToken, generateRefreshToken } from "../../helpers/common";
 import { comparePassword, hashPassword } from "./auth.helper";
 import { PROVIDERS, UserTable } from "../../db/schema/userTable";
@@ -25,7 +25,7 @@ const register = async (payload: TRegisterPayload) => {
   return "You have successfully registered";
 };
 
-const login = async (payload: TLoginPayload) => {
+const loginWithCredentials = async (payload: TLoginWithCredentialsPayload) => {
   const { email, password } = payload;
   const isUserExist = await db.query.user.findFirst({
     where: eq(UserTable.email, email),
@@ -82,4 +82,4 @@ const changePassword = async (payload: TChangePasswordPayload, email: string) =>
   return "Password changed successfully";
 };
 
-export const authService = { register, login, getAccessToken, changePassword };
+export const authService = { register, loginWithCredentials, getAccessToken, changePassword };
