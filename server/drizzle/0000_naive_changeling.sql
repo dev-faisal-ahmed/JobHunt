@@ -1,5 +1,6 @@
-CREATE TYPE "public"."status" AS ENUM('INVITED', 'CONNECTED', 'IN_CONTACT');--> statement-breakpoint
+CREATE TYPE "public"."application-status" AS ENUM('APPLIED', 'GOT_TASK', 'GO_INTERVIEW_CALL', 'HIRED', 'REJECTED');--> statement-breakpoint
 CREATE TYPE "public"."job-type" AS ENUM('INTERNSHIP_ONSITE', 'INTERNSHIP_REMOTE', 'INTERNSHIP_HYBRID', 'FULL_TIME_ONSITE', 'FULL_TIME_REMOTE', 'FULL_TIME_HYBRID', 'PART_TIME_ONSITE', 'PART_TIME_REMOTE', 'PART_TIME_HYBRID');--> statement-breakpoint
+CREATE TYPE "public"."connection-status" AS ENUM('INVITED', 'CONNECTED', 'IN_CONTACT');--> statement-breakpoint
 CREATE TYPE "public"."interview-status" AS ENUM('PENDING', 'SUBMITTED', 'IGNORED');--> statement-breakpoint
 CREATE TYPE "public"."task-status" AS ENUM('PENDING', 'SUBMITTED', 'IGNORED');--> statement-breakpoint
 CREATE TYPE "public"."provider" AS ENUM('GOOGLE', 'CREDENTIALS');--> statement-breakpoint
@@ -11,7 +12,7 @@ CREATE TABLE IF NOT EXISTS "applications" (
 	"jobPostLink" text,
 	"description" text,
 	"type" "job-type",
-	"status" "status" DEFAULT 'APPLIED',
+	"status" "application-status" DEFAULT 'APPLIED',
 	"salary" real,
 	"expectedSalary" real,
 	"skills" text[],
@@ -40,7 +41,7 @@ CREATE TABLE IF NOT EXISTS "connections" (
 	"linkedIn" text,
 	"phone" varchar(16),
 	"email" varchar(60),
-	"status" "status" DEFAULT 'INVITED',
+	"status" "connection-status" DEFAULT 'INVITED',
 	"createdAt" timestamp DEFAULT now()
 );
 --> statement-breakpoint

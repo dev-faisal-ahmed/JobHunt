@@ -1,11 +1,12 @@
 import { z } from "zod";
 
 const addCompanySchema = z.object({
-  companyName: z
-    .string({ required_error: "Company name is required" })
-    .min(1, { message: "Company name is too little" }),
-  carrierPageLink: z.string().optional(),
-  note: z.string().optional(),
+  name: z.string().min(1),
+  email: z.string().email().optional(),
+  website: z.string().optional(),
+  carrierPage: z.string().optional(),
+  linkedIn: z.string().optional(),
+  location: z.string().optional(),
 });
 
 export const companyValidation = { addCompanySchema };

@@ -6,7 +6,7 @@ import { companyTable } from "./companyTable";
 import { taskTable } from "./taskTable";
 import { interviewTable } from "./interviewTable";
 
-export const applicationStatusEnum = pgEnum("status", [
+export const applicationStatusEnum = pgEnum("application-status", [
   "APPLIED",
   "GOT_TASK",
   "GO_INTERVIEW_CALL",

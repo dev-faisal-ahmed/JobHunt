@@ -24,7 +24,7 @@ const register = async (payload: TRegisterPayload) => {
   if (isUserExist) throw new AppError("User already exist", 400);
 
   const password = await hashPassword(payload.password);
-  await db.insert(userTable).values({ name, email, password, provider: "GOOGLE" });
+  await db.insert(userTable).values({ name, email, password, provider: "CREDENTIALS" });
 
   return "You have successfully registered";
 };

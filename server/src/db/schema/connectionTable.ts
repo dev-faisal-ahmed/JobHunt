@@ -4,7 +4,7 @@ import { relations } from "drizzle-orm";
 import { userTable } from "./userTable";
 import { companyTable } from "./companyTable";
 
-export const connectionStatusEnum = pgEnum("status", ["INVITED", "CONNECTED", "IN_CONTACT"]);
+export const connectionStatusEnum = pgEnum("connection-status", ["INVITED", "CONNECTED", "IN_CONTACT"]);
 
 export const connectionTable = pgTable("connections", {
   id: uuid().defaultRandom().primaryKey(),

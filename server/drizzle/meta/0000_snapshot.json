@@ -1,5 +1,5 @@
 {
-  "id": "c9f7e7a7-013d-4367-b5e2-674f0294019b",
+  "id": "86ed3847-ec50-4882-884f-4251b440b560",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -54,7 +54,7 @@
         },
         "status": {
           "name": "status",
-          "type": "status",
+          "type": "application-status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": false,
@@ -265,7 +265,7 @@
         },
         "status": {
           "name": "status",
-          "type": "status",
+          "type": "connection-status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": false,
@@ -570,13 +570,15 @@
     }
   },
   "enums": {
-    "public.status": {
-      "name": "status",
+    "public.application-status": {
+      "name": "application-status",
       "schema": "public",
       "values": [
-        "INVITED",
-        "CONNECTED",
-        "IN_CONTACT"
+        "APPLIED",
+        "GOT_TASK",
+        "GO_INTERVIEW_CALL",
+        "HIRED",
+        "REJECTED"
       ]
     },
     "public.job-type": {
@@ -592,6 +594,15 @@
         "PART_TIME_ONSITE",
         "PART_TIME_REMOTE",
         "PART_TIME_HYBRID"
+      ]
+    },
+    "public.connection-status": {
+      "name": "connection-status",
+      "schema": "public",
+      "values": [
+        "INVITED",
+        "CONNECTED",
+        "IN_CONTACT"
       ]
     },
     "public.interview-status": {
