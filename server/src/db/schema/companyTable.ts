@@ -1,9 +1,11 @@
 import { pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+
 import { userTable } from "./userTable";
 import { relations } from "drizzle-orm";
+import { connectionTable } from "./connectionTable";
 
 export const companyTable = pgTable("companies", {
-  id: uuid().primaryKey().defaultRandom(),
+  id: uuid().defaultRandom().primaryKey(),
   userId: uuid()
     .notNull()
     .references(() => userTable.id),
@@ -16,11 +18,7 @@ export const companyTable = pgTable("companies", {
   createdAt: timestamp().defaultNow(),
 });
 
-export const CompanyTableRelations = relations(companyTable, ({ one }) => {
-  return {
-    user: one(userTable, {
-      fields: [companyTable.userId],
-      references: [userTable.id],
-    }),
-  };
-});
+export const CompanyTableRelations = relations(companyTable, ({ one, many }) => ({
+  user: one(userTable, { fields: [companyTable.userId], references: [userTable.id] }),
+  connections: many(connectionTable),
+}));

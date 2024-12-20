@@ -1,6 +1,6 @@
 import { authService } from "./auth.service";
+import { catchAsync } from "../../middlewares/catchAsync";
 import { sendSuccessResponse } from "../../helpers/responseHelpers";
-import { catchAsync } from "../../middlewares";
 
 const register = catchAsync(async (req, res) => {
   const message = await authService.register(req.body);

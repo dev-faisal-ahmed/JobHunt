@@ -1,25 +1,26 @@
-import { relations } from "drizzle-orm";
 import { pgEnum, pgTable, text, timestamp, uniqueIndex, uuid, varchar } from "drizzle-orm/pg-core";
-import { companyTable } from "./companyTable";
 
-export const ProviderEnum = pgEnum("provider", ["GOOGLE", "CREDENTIALS"]);
+import { relations } from "drizzle-orm";
+import { companyTable } from "./companyTable";
+import { connectionTable } from "./connectionTable";
+
+export const providerEnum = pgEnum("provider", ["GOOGLE", "CREDENTIALS"]);
 
 export const userTable = pgTable(
   "users",
   {
-    id: uuid().primaryKey().defaultRandom(),
+    id: uuid().defaultRandom().primaryKey(),
     name: varchar({ length: 60 }).notNull(),
     email: varchar({ length: 60 }).notNull(),
     password: varchar({ length: 60 }),
     imageUrl: text(),
-    provider: ProviderEnum(),
+    provider: providerEnum(),
     createdAt: timestamp().defaultNow(),
   },
   (table) => [{ emailIndex: uniqueIndex("email_idx").on(table.email) }]
 );
 
-export const userTableRelation = relations(userTable, ({ many }) => {
-  return {
-    companies: many(companyTable),
-  };
-});
+export const userTableRelation = relations(userTable, ({ many }) => ({
+  companies: many(companyTable),
+  connections: many(connectionTable),
+}));
