@@ -4,6 +4,8 @@ import { relations } from "drizzle-orm";
 import { companyTable } from "./companyTable";
 import { connectionTable } from "./connectionTable";
 import { applicationTable } from "./applicationTable";
+import { taskTable } from "./taskTable";
+import { interviewTable } from "./interviewTable";
 
 export const providerEnum = pgEnum("provider", ["GOOGLE", "CREDENTIALS"]);
 
@@ -25,4 +27,6 @@ export const userTableRelation = relations(userTable, ({ many }) => ({
   companies: many(companyTable),
   connections: many(connectionTable),
   applications: many(applicationTable),
+  tasks: many(taskTable),
+  interviews: many(interviewTable),
 }));

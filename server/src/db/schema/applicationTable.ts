@@ -1,7 +1,10 @@
-import { relations } from "drizzle-orm";
 import { pgEnum, pgTable, real, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+
+import { relations } from "drizzle-orm";
 import { userTable } from "./userTable";
 import { companyTable } from "./companyTable";
+import { taskTable } from "./taskTable";
+import { interviewTable } from "./interviewTable";
 
 export const applicationStatusEnum = pgEnum("status", [
   "APPLIED",
@@ -25,8 +28,12 @@ export const jobTypeEnum = pgEnum("job-type", [
 
 export const applicationTable = pgTable("applications", {
   id: uuid().defaultRandom().primaryKey(),
-  userId: uuid().notNull(),
-  companyId: uuid().notNull(),
+  userId: uuid()
+    .notNull()
+    .references(() => userTable.id),
+  companyId: uuid()
+    .notNull()
+    .references(() => companyTable.id),
   designation: varchar({ length: 40 }),
   jobPostLink: text(),
   description: text(),
@@ -39,7 +46,9 @@ export const applicationTable = pgTable("applications", {
   createdAt: timestamp().defaultNow(),
 });
 
-export const applicationRelations = relations(applicationTable, ({ one }) => ({
+export const applicationRelations = relations(applicationTable, ({ one, many }) => ({
   userId: one(userTable, { fields: [applicationTable.userId], references: [userTable.id] }),
   company: one(companyTable, { fields: [applicationTable.companyId], references: [companyTable.id] }),
+  tasks: many(taskTable),
+  interviews: many(interviewTable),
 }));

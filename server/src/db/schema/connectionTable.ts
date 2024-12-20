@@ -8,8 +8,12 @@ export const connectionStatusEnum = pgEnum("status", ["INVITED", "CONNECTED", "I
 
 export const connectionTable = pgTable("connections", {
   id: uuid().defaultRandom().primaryKey(),
-  userId: uuid().notNull(),
-  companyId: uuid().notNull(),
+  userId: uuid()
+    .notNull()
+    .references(() => userTable.id),
+  companyId: uuid()
+    .notNull()
+    .references(() => companyTable.id),
   name: varchar({ length: 60 }),
   designation: varchar({ length: 60 }),
   linkedIn: text(),
