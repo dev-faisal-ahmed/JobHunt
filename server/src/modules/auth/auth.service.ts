@@ -8,30 +8,31 @@ import {
 import { db } from "../../db";
 import { eq } from "drizzle-orm";
 import { AppError } from "../../helpers/appError";
-import { decodeRefreshToken, generateAccessToken, generateRefreshToken } from "../../helpers/common";
 import { comparePassword, hashPassword } from "./auth.helper";
-import { PROVIDERS, USERS } from "../../db/schema";
+import { userTable } from "../../db/schema";
+
+import { decodeRefreshToken, generateAccessToken, generateRefreshToken } from "../../helpers/common";
 
 const register = async (payload: TRegisterPayload) => {
   const { name, email } = payload;
   // checking if user already exist or not
-  const isUserExist = await db.query.USERS.findFirst({
-    where: eq(USERS.email, email),
+  const isUserExist = await db.query.userTable.findFirst({
+    where: eq(userTable.email, email),
     columns: { email: true },
   });
 
   if (isUserExist) throw new AppError("User already exist", 400);
 
   const password = await hashPassword(payload.password);
-  await db.insert(USERS).values({ name, email, password, provider: PROVIDERS.CREDENTIALS });
+  await db.insert(userTable).values({ name, email, password, provider: "GOOGLE" });
 
   return "You have successfully registered";
 };
 
 const loginWithCredentials = async (payload: TLoginWithCredentialsPayload) => {
   const { email, password } = payload;
-  const isUserExist = await db.query.USERS.findFirst({
-    where: eq(USERS.email, email),
+  const isUserExist = await db.query.userTable.findFirst({
+    where: eq(userTable.email, email),
     columns: { id: true, name: true, email: true, imageUrl: true, password: true },
   });
 
@@ -52,8 +53,8 @@ const loginWithCredentials = async (payload: TLoginWithCredentialsPayload) => {
 const loginWithGoogle = async (payload: TLoginWithGooglePayload) => {
   // checking if the user already exist or if he does generate access token if does not create a new user and then generate the access token
 
-  const isUserExist = await db.query.USERS.findFirst({
-    where: eq(USERS.email, payload.email),
+  const isUserExist = await db.query.userTable.findFirst({
+    where: eq(userTable.email, payload.email),
     columns: { id: true, name: true, email: true, imageUrl: true },
   });
 
@@ -67,9 +68,9 @@ const loginWithGoogle = async (payload: TLoginWithGooglePayload) => {
 
   const { name, email, imageUrl } = payload;
   const [user] = await db
-    .insert(USERS)
-    .values({ name, email, provider: PROVIDERS.GOOGLE, imageUrl })
-    .returning({ id: USERS.id });
+    .insert(userTable)
+    .values({ name, email, provider: "GOOGLE", imageUrl })
+    .returning({ id: userTable.id });
 
   const accessToken = generateAccessToken({ id: user.id, name, email, imageUrl });
   const refreshToken = generateRefreshToken({ id: user.id, email });
@@ -83,8 +84,8 @@ const getAccessToken = async (refreshToken: string) => {
   if (!decodedUser) throw new AppError("Invalid refresh token", 400);
   const email = decodedUser.email;
 
-  const isUserExist = await db.query.USERS.findFirst({
-    where: eq(USERS.email, email),
+  const isUserExist = await db.query.userTable.findFirst({
+    where: eq(userTable.email, email),
     columns: { id: true, name: true, email: true, imageUrl: true },
   });
 
@@ -96,19 +97,19 @@ const getAccessToken = async (refreshToken: string) => {
 };
 
 const changePassword = async (payload: TChangePasswordPayload, email: string) => {
-  const userInfo = await db.query.USERS.findFirst({
-    where: eq(USERS.email, email),
+  const userInfo = await db.query.userTable.findFirst({
+    where: eq(userTable.email, email),
     columns: { password: true, provider: true },
   });
 
   if (!userInfo) throw new AppError("User not found", 404);
-  if (userInfo.provider === PROVIDERS.GOOGLE) throw new AppError("You are not allowed to change password", 400);
+  if (userInfo.provider === "GOOGLE") throw new AppError("You are not allowed to change password", 400);
 
   const isPasswordMatch = await comparePassword(payload.oldPassword, userInfo.password!);
   if (!isPasswordMatch) throw new AppError("Password does not change", 400);
 
   const password = await hashPassword(payload.newPassword);
-  await db.update(USERS).set({ password });
+  await db.update(userTable).set({ password });
 
   return "Password changed successfully";
 };
