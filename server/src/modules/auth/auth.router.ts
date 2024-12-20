@@ -11,13 +11,13 @@ authRouter.post("/register", validationHandler(authValidation.registerSchema), a
 authRouter.post(
   "/login/credentials",
   validationHandler(authValidation.loginWithCredentialsSchema),
-  authController.loginWithCredentials
+  authController.loginWithCredentials,
 );
 
 authRouter.post(
   "/login/google",
   validationHandler(authValidation.loginWithGoogleSchema),
-  authController.loginWithGoogle
+  authController.loginWithGoogle,
 );
 
 authRouter.get("/get-access-token", authController.getAccessToken);
@@ -26,5 +26,5 @@ authRouter.post(
   "/change-password",
   authGuard,
   validationHandler(authValidation.changePasswordSchema),
-  authController.changePassword
+  authController.changePassword,
 );
