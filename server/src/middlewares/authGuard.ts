@@ -1,12 +1,8 @@
-import { db } from "../db";
-import { eq } from "drizzle-orm";
 import { AppError } from "../helpers/appError";
 import { decodeAccessToken } from "../helpers/common";
-import { catchAsync } from "./catchAsync";
-import { USERS } from "../db/schema";
+import { catchAsync } from "../middlewares/catchAsync";
 
 const BEARER = "bearer";
-
 export const authGuard = catchAsync(async (req, _, next) => {
   const token = req.headers.authorization;
   if (!token) throw new AppError("No token found", 404);
@@ -17,14 +13,14 @@ export const authGuard = catchAsync(async (req, _, next) => {
   const decodedUser = decodeAccessToken(tokenPart);
   if (!decodedUser) throw new AppError("Invalid token", 400);
 
-  const { email } = decodedUser;
-  const isUserExist = await db.query.USERS.findFirst({
-    where: eq(USERS.email, email),
-    columns: { id: true, email: true },
-  });
+  // const { email } = decodedUser;
+  // const isUserExist = await db.query.USERS.findFirst({
+  //   where: eq(USERS.email, email),
+  //   columns: { id: true, email: true },
+  // });
 
-  if (!isUserExist) throw new AppError("User not found!", 404);
+  // if (!isUserExist) throw new AppError("User not found!", 404);
 
-  req.user = isUserExist;
+  // req.user = isUserExist;
   next();
 });

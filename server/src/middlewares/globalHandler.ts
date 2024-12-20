@@ -1,5 +1,5 @@
-import { config } from "../app/config";
 import { ErrorRequestHandler } from "express";
+import { NODE_ENV } from "../app/config";
 import { sendErrorResponse } from "../helpers/responseHelpers";
 
 export const globalErrorHandler: ErrorRequestHandler = (error, _, res, __) => {
@@ -16,7 +16,7 @@ export const globalErrorHandler: ErrorRequestHandler = (error, _, res, __) => {
     message = error.detail;
   }
 
-  const errorInfo = config.NODE_ENV === "development" ? error : null;
+  const errorInfo = NODE_ENV === "development" ? error : null;
 
   sendErrorResponse(res, { status, message, error: errorInfo });
 };

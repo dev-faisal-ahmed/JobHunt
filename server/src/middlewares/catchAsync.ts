@@ -1,4 +1,4 @@
-import { RequestHandler, Request, Response, NextFunction } from "express";
+import { NextFunction, Request, RequestHandler, Response } from "express";
 
 export const catchAsync = (fn: RequestHandler) => {
   return (req: Request, res: Response, next: NextFunction) => {
