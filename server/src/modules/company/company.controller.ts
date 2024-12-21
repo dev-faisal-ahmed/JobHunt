@@ -8,8 +8,8 @@ const addCompany = catchAsync(async (req, res) => {
 });
 
 const getCompanies = catchAsync(async (req, res) => {
-  const companies = await companyService.getCompanies(req.query, req.user.id);
-  sendSuccessResponse(res, { message: "", data: companies });
+  const { companies, meta } = await companyService.getCompanies(req.query, req.user.id);
+  sendSuccessResponse(res, { message: "Companies retrieved successfully", meta, data: companies });
 });
 
 export const companyController = { addCompany, getCompanies };

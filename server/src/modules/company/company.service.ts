@@ -1,9 +1,9 @@
 import { db } from "../../db";
-import { and, eq } from "drizzle-orm";
+import { and, count, eq, ilike, or } from "drizzle-orm";
 import { TAddCompanyPayload } from "./company.validation";
+import { generatePaginationArgs } from "../../helpers/queryHelper";
 import { companyTable } from "../../db/schema";
 import { AppError } from "../../helpers/appError";
-import { generatePaginationArgs } from "../../helpers/queryHelper";
 
 const addCompany = async (payload: TAddCompanyPayload, userId: string) => {
   // checking if this company is already added or not
@@ -19,31 +19,35 @@ const addCompany = async (payload: TAddCompanyPayload, userId: string) => {
 };
 
 const getCompanies = async (query: Record<string, any>, userId: string) => {
-  const { page, limit, offset } = generatePaginationArgs(query);
-
   const name = query.name;
   const location = query.location;
   const email = query.email;
   const orderBy = query.orderBy;
 
+  const generateFilter = () => {
+    return and(
+      eq(companyTable.userId, userId),
+      or(
+        name ? ilike(companyTable.name, `%${name}%`) : undefined,
+        location ? ilike(companyTable.location, `%${location}%`) : undefined,
+        email ? ilike(companyTable.email, email) : undefined
+      )
+    );
+  };
+
+  const [documentCount] = await db.select({ count: count() }).from(companyTable).where(generateFilter());
+  const { offset, meta } = generatePaginationArgs({ query, total: documentCount.count });
+
   const companies = await db.query.companyTable.findMany({
     offset,
-    limit,
+    limit: meta.limit,
+    where: generateFilter(),
+    with: { applications: { columns: { id: true } } },
     orderBy: (fields, operators) =>
       orderBy?.toLowerCase() === "asc" ? operators.asc(fields.createdAt) : operators.desc(fields.createdAt),
-    where: (fields, operators) =>
-      operators.and(
-        operators.eq(fields.userId, userId),
-        operators.or(
-          name ? operators.ilike(fields.name, `%${name}%`) : undefined,
-          location ? operators.ilike(fields.location, `%${location}%`) : undefined,
-          email ? operators.ilike(fields.email, email) : undefined
-        )
-      ),
-    with: { applications: { columns: { id: true } } },
   });
 
-  return companies;
+  return { companies, meta };
 };
 
 export const companyService = { addCompany, getCompanies };
