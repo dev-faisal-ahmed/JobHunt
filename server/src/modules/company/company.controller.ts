@@ -22,4 +22,9 @@ const updateCompanyById = catchAsync(async (req, res) => {
   sendSuccessResponse(res, { message, data: null });
 });
 
-export const companyController = { addCompany, getCompanies, getCompanyById, updateCompanyById };
+const deleteCompanyById = catchAsync(async (req, res) => {
+  const message = await companyService.deleteCompanyById(req.params.companyId);
+  sendSuccessResponse(res, { message, data: null });
+});
+
+export const companyController = { addCompany, getCompanies, getCompanyById, updateCompanyById, deleteCompanyById };

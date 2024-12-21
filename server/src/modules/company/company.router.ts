@@ -16,6 +16,8 @@ companyRouter.patch(
   companyController.updateCompanyById
 );
 
+companyRouter.delete("/:companyId", authGuard, companyController.deleteCompanyById);
+
 export const companiesRouter = Router();
 
 companiesRouter.get("/", authGuard, companyController.getCompanies);

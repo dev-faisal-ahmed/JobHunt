@@ -65,4 +65,9 @@ const updateCompanyById = async (payload: TUpdateCompanyPayload) => {
   return "Company updated successfully!";
 };
 
-export const companyService = { addCompany, getCompanies, getCompanyById, updateCompanyById };
+const deleteCompanyById = async (companyId: string) => {
+  await db.delete(companyTable).where(eq(companyTable.id, companyId));
+  return "Company deleted successfully!";
+};
+
+export const companyService = { addCompany, getCompanies, getCompanyById, updateCompanyById, deleteCompanyById };
