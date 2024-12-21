@@ -17,4 +17,9 @@ const getCompanyById = catchAsync(async (req, res) => {
   sendSuccessResponse(res, { message: "Company retrieved successfully", data: company });
 });
 
-export const companyController = { addCompany, getCompanies, getCompanyById };
+const updateCompanyById = catchAsync(async (req, res) => {
+  const message = await companyService.updateCompanyById(req.body);
+  sendSuccessResponse(res, { message, data: null });
+});
+
+export const companyController = { addCompany, getCompanies, getCompanyById, updateCompanyById };

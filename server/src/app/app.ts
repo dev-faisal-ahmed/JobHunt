@@ -3,7 +3,7 @@ import express from "express";
 import cookiesParser from "cookie-parser";
 
 import { appRouter } from "./router";
-import { globalErrorHandler } from "../middlewares/globalHandler";
+import { globalErrorHandler } from "../middlewares/globalErrorHandler";
 
 export const app = express();
 

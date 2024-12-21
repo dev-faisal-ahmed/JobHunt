@@ -9,6 +9,13 @@ export const companyRouter = Router();
 companyRouter.post("/", authGuard, validationHandler(companyValidation.addCompanySchema), companyController.addCompany);
 companyRouter.get("/:companyId", authGuard, companyController.getCompanyById);
 
+companyRouter.patch(
+  "/",
+  authGuard,
+  validationHandler(companyValidation.updateCompanySchema),
+  companyController.updateCompanyById
+);
+
 export const companiesRouter = Router();
 
 companiesRouter.get("/", authGuard, companyController.getCompanies);

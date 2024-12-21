@@ -1,6 +1,6 @@
 import { db } from "../../db";
 import { and, count, eq, ilike, or } from "drizzle-orm";
-import { TAddCompanyPayload } from "./company.validation";
+import { TAddCompanyPayload, TUpdateCompanyPayload } from "./company.validation";
 import { generatePaginationArgs } from "../../helpers/queryHelper";
 import { companyTable } from "../../db/schema";
 import { AppError } from "../../helpers/appError";
@@ -59,4 +59,10 @@ const getCompanyById = async (companyId: string) => {
   return company;
 };
 
-export const companyService = { addCompany, getCompanies, getCompanyById };
+const updateCompanyById = async (payload: TUpdateCompanyPayload) => {
+  const { companyId, ...restPayload } = payload;
+  await db.update(companyTable).set(restPayload).where(eq(companyTable.id, companyId));
+  return "Company updated successfully!";
+};
+
+export const companyService = { addCompany, getCompanies, getCompanyById, updateCompanyById };
