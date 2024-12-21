@@ -17,7 +17,7 @@ interface IAcessTokenData {
 }
 
 export const generateAccessToken = (payload: IAcessTokenData) => {
-  return jwt.sign(payload, ACCESS_TOKEN_SECRET!, { expiresIn: "30m" });
+  return jwt.sign(payload, ACCESS_TOKEN_SECRET!, { expiresIn: "30d" });
 };
 
 interface IRefreshTokenData {

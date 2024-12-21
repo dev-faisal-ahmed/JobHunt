@@ -12,4 +12,9 @@ const getCompanies = catchAsync(async (req, res) => {
   sendSuccessResponse(res, { message: "Companies retrieved successfully", meta, data: companies });
 });
 
-export const companyController = { addCompany, getCompanies };
+const getCompanyById = catchAsync(async (req, res) => {
+  const company = await companyService.getCompanyById(req.params.companyId);
+  sendSuccessResponse(res, { message: "Company retrieved successfully", data: company });
+});
+
+export const companyController = { addCompany, getCompanies, getCompanyById };

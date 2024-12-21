@@ -50,4 +50,13 @@ const getCompanies = async (query: Record<string, any>, userId: string) => {
   return { companies, meta };
 };
 
-export const companyService = { addCompany, getCompanies };
+const getCompanyById = async (companyId: string) => {
+  const company = await db.query.companyTable.findFirst({
+    where: eq(companyTable.id, companyId),
+    with: { applications: true },
+  });
+
+  return company;
+};
+
+export const companyService = { addCompany, getCompanies, getCompanyById };
