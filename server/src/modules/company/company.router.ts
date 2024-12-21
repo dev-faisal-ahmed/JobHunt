@@ -7,3 +7,7 @@ import { validationHandler } from "../../middlewares/validationHandler";
 export const companyRouter = Router();
 
 companyRouter.post("/", authGuard, validationHandler(companyValidation.addCompanySchema), companyController.addCompany);
+
+export const companiesRouter = Router();
+
+companiesRouter.get("/", authGuard, companyController.getCompanies);

@@ -7,4 +7,9 @@ const addCompany = catchAsync(async (req, res) => {
   sendSuccessResponse(res, { message, data: null });
 });
 
-export const companyController = { addCompany };
+const getCompanies = catchAsync(async (req, res) => {
+  const companies = await companyService.getCompanies(req.query, req.user.id);
+  sendSuccessResponse(res, { message: "", data: companies });
+});
+
+export const companyController = { addCompany, getCompanies };
