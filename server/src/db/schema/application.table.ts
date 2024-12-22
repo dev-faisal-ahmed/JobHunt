@@ -6,15 +6,8 @@ import { companyTable } from "./company.table";
 import { taskTable } from "./task.table";
 import { interviewTable } from "./interview.table";
 
-export const applicationStatusEnum = pgEnum("application-status", [
-  "APPLIED",
-  "GOT_TASK",
-  "GO_INTERVIEW_CALL",
-  "HIRED",
-  "REJECTED",
-]);
-
-export const jobTypeEnum = pgEnum("job-type", [
+export const APPLICATION_STATUS = ["APPLIED", "GOT_TASK", "GO_INTERVIEW_CALL", "HIRED", "REJECTED"] as const;
+export const JOB_TYPE = [
   "INTERNSHIP_ONSITE",
   "INTERNSHIP_REMOTE",
   "INTERNSHIP_HYBRID",
@@ -24,7 +17,10 @@ export const jobTypeEnum = pgEnum("job-type", [
   "PART_TIME_ONSITE",
   "PART_TIME_REMOTE",
   "PART_TIME_HYBRID",
-]);
+] as const;
+
+export const applicationStatusEnum = pgEnum("application-status", APPLICATION_STATUS);
+export const jobTypeEnum = pgEnum("job-type", JOB_TYPE);
 
 export const applicationTable = pgTable("applications", {
   id: uuid().defaultRandom().primaryKey(),
