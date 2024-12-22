@@ -1,10 +1,10 @@
 import { pgEnum, pgTable, real, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
 import { relations } from "drizzle-orm";
-import { userTable } from "./userTable";
-import { companyTable } from "./companyTable";
-import { taskTable } from "./taskTable";
-import { interviewTable } from "./interviewTable";
+import { userTable } from "./user.table";
+import { companyTable } from "./company.table";
+import { taskTable } from "./task.table";
+import { interviewTable } from "./interview.table";
 
 export const applicationStatusEnum = pgEnum("application-status", [
   "APPLIED",

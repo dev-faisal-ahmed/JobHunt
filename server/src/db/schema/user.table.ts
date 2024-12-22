@@ -1,11 +1,11 @@
 import { pgEnum, pgTable, text, timestamp, uniqueIndex, uuid, varchar } from "drizzle-orm/pg-core";
 
 import { relations } from "drizzle-orm";
-import { companyTable } from "./companyTable";
-import { connectionTable } from "./connectionTable";
-import { applicationTable } from "./applicationTable";
-import { taskTable } from "./taskTable";
-import { interviewTable } from "./interviewTable";
+import { companyTable } from "./company.table";
+import { connectionTable } from "./connection.table";
+import { applicationTable } from "./application.table";
+import { taskTable } from "./task.table";
+import { interviewTable } from "./interview.table";
 
 export const providerEnum = pgEnum("provider", ["GOOGLE", "CREDENTIALS"]);
 

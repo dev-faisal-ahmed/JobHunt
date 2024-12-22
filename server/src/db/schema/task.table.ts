@@ -1,7 +1,7 @@
 import { integer, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
-import { userTable } from "./userTable";
-import { applicationTable } from "./applicationTable";
+import { userTable } from "./user.table";
+import { applicationTable } from "./application.table";
 import { relations } from "drizzle-orm";
 
 export const taskStatusEnum = pgEnum("task-status", ["PENDING", "SUBMITTED", "IGNORED"]);

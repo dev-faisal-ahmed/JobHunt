@@ -1,8 +1,8 @@
 import { pgEnum, pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
 import { relations } from "drizzle-orm";
-import { userTable } from "./userTable";
-import { companyTable } from "./companyTable";
+import { userTable } from "./user.table";
+import { companyTable } from "./company.table";
 
 export const connectionStatusEnum = pgEnum("connection-status", ["INVITED", "CONNECTED", "IN_CONTACT"]);
 
