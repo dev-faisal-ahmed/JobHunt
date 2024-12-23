@@ -54,7 +54,7 @@ export const applicationTable = pgTable("applications", {
   companyId: uuid()
     .notNull()
     .references(() => companyTable.id),
-  designation: varchar({ length: 40 }),
+  designation: varchar({ length: 40 }).notNull(),
   jobPostLink: text(),
   description: text(),
   type: jobTypeEnum(),

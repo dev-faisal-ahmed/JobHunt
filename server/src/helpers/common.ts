@@ -1,5 +1,7 @@
 import jwt from "jsonwebtoken";
 
+import { z } from "zod";
+import { IMeta } from "./responseHelpers";
 import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from "../app/config";
 
 // ************** DATE HELPER ************** \\
@@ -41,4 +43,28 @@ export const decodeRefreshToken = (refreshToken: string) => {
   if (!decodedData) return null;
 
   return decodedData as IRefreshTokenData;
+};
+
+// ************** QUERY HELPER ************** \\
+
+interface IGeneratePaginationArgs {
+  query: Record<string, string>;
+  defaultLimit?: number;
+  total: number;
+}
+
+export const generatePaginationArgs = ({ query, defaultLimit = 20, total = 0 }: IGeneratePaginationArgs) => {
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || defaultLimit;
+  const offset = (page - 1) * limit;
+
+  const meta: IMeta = { page, limit, total, totalPages: Math.ceil(total / limit) };
+
+  return { offset, meta };
+};
+
+// ************** ZOD HELPER ************** \\
+
+export const enumGenerator = (options: string[], message: string) => {
+  return z.enum([...(options as [string, ...string[]])], { message });
 };

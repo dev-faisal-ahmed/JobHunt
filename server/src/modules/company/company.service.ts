@@ -1,7 +1,7 @@
 import { db } from "../../db";
-import { and, count, eq, ilike, or } from "drizzle-orm";
+import { and, asc, count, desc, eq, ilike, or } from "drizzle-orm";
 import { TAddCompanyPayload, TUpdateCompanyPayload } from "./company.validation";
-import { generatePaginationArgs } from "../../helpers/queryHelper";
+import { generatePaginationArgs } from "../../helpers/common";
 import { companyTable } from "../../db/schema";
 import { AppError } from "../../helpers/appError";
 
@@ -43,8 +43,7 @@ const getCompanies = async (query: Record<string, any>, userId: string) => {
     limit: meta.limit,
     where: generateFilter(),
     with: { applications: { columns: { id: true } } },
-    orderBy: (fields, operators) =>
-      orderBy?.toLowerCase() === "asc" ? operators.asc(fields.createdAt) : operators.desc(fields.createdAt),
+    orderBy: orderBy?.toLowerCase() === "asc" ? asc(companyTable.createdAt) : desc(companyTable.createdAt),
   });
 
   return { companies, meta };
