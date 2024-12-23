@@ -2,7 +2,6 @@ import { pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
 import { userTable } from "./user.table";
 import { relations } from "drizzle-orm";
-import { connectionTable } from "./connection.table";
 import { applicationTable } from "./application.table";
 
 export const companyTable = pgTable("companies", {
@@ -21,6 +20,5 @@ export const companyTable = pgTable("companies", {
 
 export const CompanyTableRelations = relations(companyTable, ({ one, many }) => ({
   user: one(userTable, { fields: [companyTable.userId], references: [userTable.id] }),
-  connections: many(connectionTable),
   applications: many(applicationTable),
 }));

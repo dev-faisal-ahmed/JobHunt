@@ -6,21 +6,45 @@ import { companyTable } from "./company.table";
 import { taskTable } from "./task.table";
 import { interviewTable } from "./interview.table";
 
-export const APPLICATION_STATUS = ["APPLIED", "GOT_TASK", "GO_INTERVIEW_CALL", "HIRED", "REJECTED"] as const;
-export const JOB_TYPE = [
-  "INTERNSHIP_ONSITE",
-  "INTERNSHIP_REMOTE",
-  "INTERNSHIP_HYBRID",
-  "FULL_TIME_ONSITE",
-  "FULL_TIME_REMOTE",
-  "FULL_TIME_HYBRID",
-  "PART_TIME_ONSITE",
-  "PART_TIME_REMOTE",
-  "PART_TIME_HYBRID",
-] as const;
+export enum APPLICATION_STATUS {
+  APPLIED = "APPLIED",
+  GOT_TASK = "GOT_TASK",
+  GO_INTERVIEW_CALL = "GO_INTERVIEW_CALL",
+  HIRED = "HIRED",
+  REJECTED = "REJECTED",
+}
 
-export const applicationStatusEnum = pgEnum("application-status", APPLICATION_STATUS);
-export const jobTypeEnum = pgEnum("job-type", JOB_TYPE);
+export enum JOB_TYPE {
+  INTERNSHIP_ONSITE = "INTERNSHIP_ONSITE",
+  INTERNSHIP_REMOTE = "INTERNSHIP_REMOTE",
+  INTERNSHIP_HYBRID = "INTERNSHIP_HYBRID",
+  FULL_TIME_ONSITE = "FULL_TIME_ONSITE",
+  FULL_TIME_REMOTE = "FULL_TIME_REMOTE",
+  FULL_TIME_HYBRID = "FULL_TIME_HYBRID",
+  PART_TIME_ONSITE = "PART_TIME_ONSITE",
+  PART_TIME_REMOTE = "PART_TIME_REMOTE",
+  PART_TIME_HYBRID = "PART_TIME_HYBRID",
+}
+
+export const applicationStatusEnum = pgEnum("application-status", [
+  APPLICATION_STATUS.APPLIED,
+  APPLICATION_STATUS.GOT_TASK,
+  APPLICATION_STATUS.GO_INTERVIEW_CALL,
+  APPLICATION_STATUS.HIRED,
+  APPLICATION_STATUS.REJECTED,
+]);
+
+export const jobTypeEnum = pgEnum("job-type", [
+  JOB_TYPE.INTERNSHIP_ONSITE,
+  JOB_TYPE.INTERNSHIP_REMOTE,
+  JOB_TYPE.INTERNSHIP_HYBRID,
+  JOB_TYPE.FULL_TIME_ONSITE,
+  JOB_TYPE.FULL_TIME_REMOTE,
+  JOB_TYPE.FULL_TIME_HYBRID,
+  JOB_TYPE.PART_TIME_ONSITE,
+  JOB_TYPE.PART_TIME_REMOTE,
+  JOB_TYPE.PART_TIME_HYBRID,
+]);
 
 export const applicationTable = pgTable("applications", {
   id: uuid().defaultRandom().primaryKey(),
@@ -34,7 +58,7 @@ export const applicationTable = pgTable("applications", {
   jobPostLink: text(),
   description: text(),
   type: jobTypeEnum(),
-  status: applicationStatusEnum().default("APPLIED"),
+  status: applicationStatusEnum().default(APPLICATION_STATUS.APPLIED),
   salary: real(),
   expectedSalary: real(),
   skills: text().array(),

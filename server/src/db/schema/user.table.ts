@@ -2,12 +2,16 @@ import { pgEnum, pgTable, text, timestamp, uniqueIndex, uuid, varchar } from "dr
 
 import { relations } from "drizzle-orm";
 import { companyTable } from "./company.table";
-import { connectionTable } from "./connection.table";
 import { applicationTable } from "./application.table";
 import { taskTable } from "./task.table";
 import { interviewTable } from "./interview.table";
 
-export const providerEnum = pgEnum("provider", ["GOOGLE", "CREDENTIALS"]);
+export enum PROVIDER {
+  GOOGLE = "GOOGLE",
+  CREDENTIALS = "CREDENTIALS",
+}
+
+export const providerEnum = pgEnum("provider", [PROVIDER.GOOGLE, PROVIDER.CREDENTIALS]);
 
 export const userTable = pgTable(
   "users",
@@ -25,7 +29,6 @@ export const userTable = pgTable(
 
 export const userTableRelation = relations(userTable, ({ many }) => ({
   companies: many(companyTable),
-  connections: many(connectionTable),
   applications: many(applicationTable),
   tasks: many(taskTable),
   interviews: many(interviewTable),

@@ -4,7 +4,17 @@ import { userTable } from "./user.table";
 import { applicationTable } from "./application.table";
 import { relations } from "drizzle-orm";
 
-export const interviewStatusEnum = pgEnum("interview-status", ["PENDING", "SUBMITTED", "IGNORED"]);
+export enum INTERVIEW_STATUS {
+  PENDING = "PENDING",
+  SUBMITTED = "SUBMITTED",
+  IGNORED = "IGNORED",
+}
+
+export const interviewStatusEnum = pgEnum("interview-status", [
+  INTERVIEW_STATUS.PENDING,
+  INTERVIEW_STATUS.SUBMITTED,
+  INTERVIEW_STATUS.IGNORED,
+]);
 
 export const interviewTable = pgTable("interviews", {
   id: uuid().defaultRandom().primaryKey(),
@@ -17,7 +27,7 @@ export const interviewTable = pgTable("interviews", {
   level: integer().notNull(),
   description: text(),
   note: text(),
-  status: interviewStatusEnum().default("PENDING"),
+  status: interviewStatusEnum().default(INTERVIEW_STATUS.PENDING),
   interviewDate: timestamp().notNull(),
   createdAt: timestamp().defaultNow(),
 });

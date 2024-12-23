@@ -26,3 +26,7 @@ const createApplicationSchema = z.object({
     )
     .optional(),
 });
+
+export const applicationValidation = { createApplicationSchema };
+
+export type TCreateApplicationPayload = z.infer<typeof createApplicationSchema>;

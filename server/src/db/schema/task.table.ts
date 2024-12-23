@@ -4,7 +4,13 @@ import { userTable } from "./user.table";
 import { applicationTable } from "./application.table";
 import { relations } from "drizzle-orm";
 
-export const taskStatusEnum = pgEnum("task-status", ["PENDING", "SUBMITTED", "IGNORED"]);
+export enum TASK_STATUS {
+  PENDING = "PENDING",
+  SUBMITTED = "SUBMITTED",
+  IGNORED = "IGNORED",
+}
+
+export const taskStatusEnum = pgEnum("task-status", [TASK_STATUS.PENDING, TASK_STATUS.SUBMITTED, TASK_STATUS.IGNORED]);
 
 export const taskTable = pgTable("tasks", {
   id: uuid().defaultRandom().primaryKey(),
@@ -17,7 +23,7 @@ export const taskTable = pgTable("tasks", {
   level: integer().notNull(),
   description: text(),
   note: text(),
-  status: taskStatusEnum().default("PENDING"),
+  status: taskStatusEnum().default(TASK_STATUS.PENDING),
   deadline: timestamp().notNull(),
   createdAt: timestamp().defaultNow(),
 });

@@ -9,7 +9,7 @@ import { db } from "../../db";
 import { eq } from "drizzle-orm";
 import { AppError } from "../../helpers/appError";
 import { comparePassword, hashPassword } from "./auth.helper";
-import { userTable } from "../../db/schema";
+import { PROVIDER, userTable } from "../../db/schema";
 
 import { decodeRefreshToken, generateAccessToken, generateRefreshToken } from "../../helpers/common";
 
@@ -24,7 +24,7 @@ const register = async (payload: TRegisterPayload) => {
   if (isUserExist) throw new AppError("User already exist", 400);
 
   const password = await hashPassword(payload.password);
-  await db.insert(userTable).values({ name, email, password, provider: "CREDENTIALS" });
+  await db.insert(userTable).values({ name, email, password, provider: PROVIDER.CREDENTIALS });
 
   return "You have successfully registered";
 };
@@ -69,7 +69,7 @@ const loginWithGoogle = async (payload: TLoginWithGooglePayload) => {
   const { name, email, imageUrl } = payload;
   const [user] = await db
     .insert(userTable)
-    .values({ name, email, provider: "GOOGLE", imageUrl })
+    .values({ name, email, provider: PROVIDER.GOOGLE, imageUrl })
     .returning({ id: userTable.id });
 
   const accessToken = generateAccessToken({ id: user.id, name, email, imageUrl });
