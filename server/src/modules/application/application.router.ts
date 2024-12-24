@@ -12,3 +12,7 @@ applicationRouter.post(
   validationHandler(applicationValidation.createApplicationSchema),
   applicationController.createApplication
 );
+
+export const applicationsRouter = Router();
+
+applicationsRouter.get("/", authGuard, applicationController.getApplications);

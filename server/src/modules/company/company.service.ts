@@ -19,18 +19,16 @@ const addCompany = async (payload: TAddCompanyPayload, userId: string) => {
 };
 
 const getCompanies = async (query: Record<string, any>, userId: string) => {
-  const name = query.name;
-  const location = query.location;
-  const email = query.email;
   const orderBy = query.orderBy;
+  const searchTerm = query.searchTerm;
 
   const generateFilter = () => {
     return and(
       eq(companyTable.userId, userId),
       or(
-        name ? ilike(companyTable.name, `%${name}%`) : undefined,
-        location ? ilike(companyTable.location, `%${location}%`) : undefined,
-        email ? ilike(companyTable.email, email) : undefined
+        searchTerm ? ilike(companyTable.name, `%${searchTerm}%`) : undefined,
+        searchTerm ? ilike(companyTable.location, `%${searchTerm}%`) : undefined,
+        searchTerm ? ilike(companyTable.email, `%${searchTerm}%`) : undefined
       )
     );
   };
@@ -39,11 +37,11 @@ const getCompanies = async (query: Record<string, any>, userId: string) => {
   const { offset, meta } = generatePaginationArgs({ query, total: documentCount.count });
 
   const companies = await db.query.companyTable.findMany({
-    offset,
-    limit: meta.limit,
     where: generateFilter(),
     with: { applications: { columns: { id: true } } },
     orderBy: orderBy?.toLowerCase() === "asc" ? asc(companyTable.createdAt) : desc(companyTable.createdAt),
+    offset,
+    limit: meta.limit,
   });
 
   return { companies, meta };

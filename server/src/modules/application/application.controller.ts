@@ -7,4 +7,9 @@ const createApplication = catchAsync(async (req, res) => {
   sendSuccessResponse(res, { message, data: null });
 });
 
-export const applicationController = { createApplication };
+const getApplications = catchAsync(async (req, res) => {
+  const { applications, meta } = await applicationService.getApplications(req.query, req.user.id);
+  sendSuccessResponse(res, { message: "Applications retrieved successfully", meta, data: applications });
+});
+
+export const applicationController = { createApplication, getApplications };
